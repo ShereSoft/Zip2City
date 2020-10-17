@@ -1,0 +1,7 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/src/Zip2City/.vs
+/src/Zip2City/Zip2City/bin
+/src/Zip2City/Zip2City/obj
