@@ -61,17 +61,19 @@ public partial class Zip2City
             CS23000,
             CS23500,
             CS24000,
-            CS24500,
+            //CS24500,  // not used in the loop
         };
 
-        var cityStateConsolidated = new ulong[consolidated.Sum(d => d.Length)];
+        var cityStateConsolidated = new ulong[24832];  // consolidated.Sum(d => d.Length)
 
-        Array.Copy(CS00000, 0, cityStateConsolidated, 0, CS00000.Length);
+        Array.Copy(CS00000, 0, cityStateConsolidated, 0, 500);
 
-        for (int i = 1; i < consolidated.Length; i++)
+        for (int i = 1, j = 500; i < 49; i++, j+=500)  // j = consolidated.Take(i).Sum(d => d.Length)
         {
-            Array.Copy(consolidated[i], 0, cityStateConsolidated, consolidated.Take(i).Sum(d => d.Length), consolidated[i].Length);
+            Array.Copy(consolidated[i], 0, cityStateConsolidated, j, 500);
         }
+
+        Array.Copy(CS24500, 0, cityStateConsolidated, 24500, 332);
 
         var cityStates = DecodeCityStates(cityStateConsolidated);
 

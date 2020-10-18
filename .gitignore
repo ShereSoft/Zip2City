@@ -5,3 +5,6 @@
 /src/Zip2City/.vs
 /src/Zip2City/Zip2City/bin
 /src/Zip2City/Zip2City/obj
+/src/Zip2City/Zip2CityTests/obj
+/src/Zip2City/Zip2CityTests/bin
+/src/Zip2City/Zip2City/Utility.cs
