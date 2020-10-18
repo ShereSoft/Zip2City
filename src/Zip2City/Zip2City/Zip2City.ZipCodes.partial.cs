@@ -2,7 +2,7 @@
 
 partial class Zip2City
 {
-    public static readonly ulong[] ZipCodes =
+    static readonly ulong[] ZipCodes =
     {
         9372311960458180978,
         11754809827427619425,
