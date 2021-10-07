@@ -1,15 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+#if !NET20
 using System.Linq;
+#endif
 
 public partial class Zip2City
 {
-    static Dictionary<int, string[]> Dict = new Dictionary<int, string[]>();
+    static Dictionary<int, string[][]> CitiesStatesByZip = new Dictionary<int, string[][]>();
 
+    /// <summary>
+    /// Performs initialization
+    /// </summary>
     static Zip2City()
     {
-        var zips = DecodeZipCodes(ZipCodes);
-
         var consolidated = new[]
         {
             CS00000,
@@ -61,54 +64,141 @@ public partial class Zip2City
             CS23000,
             CS23500,
             CS24000,
-            //CS24500,  // not used in the loop
+            CS24500,
+            CS25000,
+            CS25500,
+            CS26000,
+            CS26500,
+            CS27000,
+            CS27500,
+            CS28000,
+            CS28500,
+            CS29000,
+            CS29500,
+            CS30000,
+            CS30500,
+            CS31000,
+            CS31500,
+            CS32000,
+            CS32500,
+            CS33000,
+            CS33500,
+            CS34000,
+            CS34500,
+            CS35000,
         };
 
-        var cityStateConsolidated = new ulong[24832];  // consolidated.Sum(d => d.Length)
+        const int entryCount = 35285;
+        var cityStateConsolidated = new ulong[entryCount];
+        
+        const int batchSize = 500;
+        int loopLimit = 35285 / batchSize;
 
-        Array.Copy(CS00000, 0, cityStateConsolidated, 0, 500);
-
-        for (int i = 1, j = 500; i < 49; i++, j+=500)  // j = consolidated.Take(i).Sum(d => d.Length)
+        for (int i = 0, j = 0; i < loopLimit; i++, j+= batchSize)
         {
-            Array.Copy(consolidated[i], 0, cityStateConsolidated, j, 500);
+            Array.Copy(consolidated[i], 0, cityStateConsolidated, j, batchSize);
         }
 
-        Array.Copy(CS24500, 0, cityStateConsolidated, 24500, 332);
+        int destIdx = batchSize * loopLimit;
+        var lastBatch = consolidated[consolidated.Length - 1];
 
+        Array.Copy(lastBatch, 0, cityStateConsolidated, destIdx, lastBatch.Length);
+
+
+        var zips = DecodeZipCodes(ZipCodes);
         var cityStates = DecodeCityStates(cityStateConsolidated);
 
         for (int i = 0; i < zips.Length; i++)
         {
-            Dict.Add(int.Parse(zips[i]), cityStates[i]);
+            var intzip = int.Parse(zips[i]);
+            var entry = new[] { cityStates[i][0], cityStates[i][1] };
+
+            if (CitiesStatesByZip.TryGetValue(intzip, out var list))
+            {
+                var resized = new string[list.Length + 1][];
+
+                if (cityStates[i][2] != null)
+                {
+                    Array.Copy(list, 0, resized, 1, list.Length);
+                    resized[0] = entry;
+
+                    CitiesStatesByZip[intzip] = resized;
+                }
+                else
+                {
+                    Array.Copy(list, resized, list.Length);
+                    resized[list.Length] = entry;
+
+                    CitiesStatesByZip[intzip] = resized;
+                }
+            }
+            else
+            {
+                CitiesStatesByZip.Add(intzip, new[] { entry });
+            }
         }
     }
 
     /// <summary>
-    /// Gets the default city and state by ZIP code.
+    /// Gets the default city and state by zip code.
     /// </summary>
-    /// <param name="zipcode">A valid USPS ZIP Code</param>
-    /// <returns>A string array containing the default city and state. Null if no data is found for the specified ZIP code.</returns>
+    /// <param name="zipcode">A valid zip Code</param>
+    /// <returns>A string array for the default city and state. Null if no data is found for the specified zip code.</returns>
     public static string[] GetDefaultCityState(string zipcode)
+    {
+        var citystates = GetCitiesAndStates(zipcode);
+
+        return citystates != null ? citystates[0] : null;
+    }
+
+    /// <summary>
+    /// Gets the cities and states by zip code.
+    /// </summary>
+    /// <param name="zipcode">A valid zip Code</param>
+    /// <returns>A list of string arrays for cities and states. Null if no data is found for the specified zip code.</returns>
+    public static string[][] GetCitiesAndStates(string zipcode)
     {
         if (zipcode == null)
         {
             throw new ArgumentNullException(nameof(zipcode));
         }
 
+#if !NET20
         if (zipcode.Length != 5 || !zipcode.All(Char.IsNumber))
         {
             throw new ArgumentException($"'{zipcode}' is not a ZIP code.");
         }
+#else
+        if (zipcode.Length != 5)
+        {
+            var allNumber = true;
+
+            foreach (var c in zipcode)
+            {
+                if (!Char.IsNumber(c))
+                {
+                    allNumber = false;
+                    break;
+                }
+            }
+
+            if (!allNumber)
+            {
+                throw new ArgumentException($"'{zipcode}' is not a ZIP code.");
+            }
+        }
+#endif
 
         var key = int.Parse(zipcode);
 
-        Dict.TryGetValue(key, out var citystate);
-        return citystate;
+        CitiesStatesByZip.TryGetValue(key, out var citystate);
+
+        return citystate != null ? citystate : null;
     }
 
     static string[] DecodeZipCodes(ulong[] data)
     {
-        var zips = new string[40852];
+        var zips = new string[56289];
         var chars = new char[5];
         int zc = 0;
         int cc = 0;
@@ -139,7 +229,7 @@ public partial class Zip2City
 
     static string[][] DecodeCityStates(ulong[] data)
     {
-        var names = new string[40852][];
+        var names = new string[56289][];
         var chars = new char[31];
         int nc = 0;
         int cc = 0;
@@ -150,9 +240,9 @@ public partial class Zip2City
             {
                 var c = (d << i) >> 59;
 
-                if (c == 31)
+                if (c == 29 || c == 31)
                 {
-                    names[nc++] = new[] { String.Intern(new String(chars, 0, cc - 2)), String.Intern(new String(chars, cc - 2, 2)) };
+                    names[nc++] = new[] { String.Intern(new String(chars, 0, cc - 2)), String.Intern(new String(chars, cc - 2, 2)), c == 31 ? "" : null };
                     cc = 0;
                 }
                 else if (c == 28)

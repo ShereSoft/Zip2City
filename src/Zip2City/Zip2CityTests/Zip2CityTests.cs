@@ -63,7 +63,7 @@ namespace Zip2CityTests
 
                 if (result == null || result.Length != 2 || result[0] != d[1] || result[1] != d[2])
                 {
-                    errors.Add($"ZIP Code '{d[0]}' should return '{d[1]}' (city) and '{d[2]}' (state).");
+                    errors.Add($"ZIP Code '{d[0]}' should return '{d[1]}' (city) and '{d[2]}' (state), instead of {result[0]}, {result[1]}");
                 }
             }
 
