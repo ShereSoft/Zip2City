@@ -1,11 +1,11 @@
 # Zip2City
-Provides fast, in-memory lookup of the postal service default city and state names by ZIP Code. All 50 states + DC. Data current as of October 15, 2020. No external calls.
+Provides fast, in-memory lookup of the postal service city/state names by zip code. All 50 states, DC, PR, VI, and AE. Data current as of September 28, 2021. No external library dependencies. No external calls.
 
 [![](https://img.shields.io/nuget/v/Zip2City.svg)](https://www.nuget.org/packages/Zip2City/)
 [![](https://img.shields.io/nuget/dt/Zip2City)](https://www.nuget.org/packages/Zip2City/)
 
-* Light-weight (300KB)
-* No library dependencies
+* Light-weight (430KB)
+* No external library dependencies
 * No external calls
 
 ### .GetDefaultCityState(zipcode)
