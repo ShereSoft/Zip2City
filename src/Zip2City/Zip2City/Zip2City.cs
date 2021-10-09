@@ -146,9 +146,12 @@ public partial class Zip2City
     /// <returns>A string array for the default city and state. Null if no data is found for the specified zip code.</returns>
     public static string[] GetDefaultCityState(string zipcode)
     {
-        var citystates = GetCitiesAndStates(zipcode);
+        foreach (var citystate in GetAllCityStates(zipcode))
+        {
+            return citystate;
+        }
 
-        return citystates != null ? citystates[0] : null;
+        return null;
     }
 
     /// <summary>
@@ -156,7 +159,7 @@ public partial class Zip2City
     /// </summary>
     /// <param name="zipcode">A valid zip Code</param>
     /// <returns>A list of string arrays for cities and states. Null if no data is found for the specified zip code.</returns>
-    public static string[][] GetCitiesAndStates(string zipcode)
+    public static IEnumerable<string[]> GetAllCityStates(string zipcode)
     {
         if (zipcode == null)
         {
@@ -191,9 +194,50 @@ public partial class Zip2City
 
         var key = int.Parse(zipcode);
 
-        CitiesStatesByZip.TryGetValue(key, out var citystate);
+        CitiesStatesByZip.TryGetValue(key, out var citiestates);
 
-        return citystate != null ? citystate : null;
+        if (citiestates != null)
+        {
+            foreach (var citystate in citiestates)
+            {
+                yield return citystate;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Gets a valid set of city, state and zip code at random
+    /// </summary>
+    /// <returns>A valid set of city, state and zip code</returns>
+    public static string[] GetRandomCityStateZip()
+    {
+        var random = Math.Abs(BitConverter.ToInt32(Guid.NewGuid().ToByteArray(), 0));
+        var index = random % CitiesStatesByZip.Count;
+        int i = 0;
+        string[][] cityState = null;
+
+        foreach (var key in CitiesStatesByZip.Keys)
+        {
+            if (i++ == index)
+            {
+                i = key;
+                cityState = CitiesStatesByZip[key];
+                break;
+            }
+        }
+
+        if (cityState == null)
+        {
+            var enumerator = CitiesStatesByZip.Keys.GetEnumerator();
+            enumerator.MoveNext();
+
+            i = enumerator.Current;
+            cityState = CitiesStatesByZip[i];
+        }
+
+        index = random % cityState.Length;
+
+        return new[] { cityState[index][0], cityState[index][1], i.ToString("00000") };
     }
 
     static string[] DecodeZipCodes(ulong[] data)

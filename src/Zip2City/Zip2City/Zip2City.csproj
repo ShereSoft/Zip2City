@@ -5,8 +5,8 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>Zip2City</AssemblyName>
     <Authors>ZTC</Authors>
-    <Version>2.0.0</Version>
-    <AssemblyVersion>2.0.0.0</AssemblyVersion>
+    <Version>2.1.0</Version>
+    <AssemblyVersion>2.1.0.0</AssemblyVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Description>Provides fast, in-memory lookup of the postal service city and state names by zip code, covering All 50 states, DC, PR, VI, and AE. Data current as of September 28, 2021. No library dependencies. No external calls.</Description>
@@ -19,7 +19,8 @@
     <RepositoryType>git</RepositoryType>
     <PackageTags>zipcode zip city state usps</PackageTags>
     <PackageProjectUrl>https://github.com/ShereSoft/Zip2City</PackageProjectUrl>
-    <FileVersion>2.0.0.0</FileVersion>
+    <FileVersion>2.1.0.0</FileVersion>
+    <Copyright>Copyright © 2020-2021 Sheresoft</Copyright>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

@@ -1,6 +1,8 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text.Json;
 
 namespace Zip2CityTests
 {
@@ -99,6 +101,46 @@ namespace Zip2CityTests
         {
             Zip2City.GetDefaultCityState(null);
             Assert.Fail("Method should throw an ArgumentNullException.");
+        }
+
+        [TestMethod]
+        public void GetAllCityStates_NeverReturnsNull()
+        {
+            var result = Zip2City.GetAllCityStates("99999");
+
+            Assert.IsNotNull(result);
+            Console.WriteLine(JsonSerializer.Serialize(new string[0][]));
+        }
+
+        [TestMethod]
+        public void GetAllCityStates_ForExistentZipCode_ReturnsOneOrMoreSets()
+        {
+            var result = Zip2City.GetAllCityStates("75261");
+
+            Assert.IsInstanceOfType(result, typeof(IEnumerable<string[]>));
+
+            foreach (var cityState in result)
+            {
+                Assert.IsNotNull(cityState[0], "It should have a city name.");
+                Assert.AreEqual(2, cityState[1].Length, "It should be a state code");
+            }
+
+            Console.WriteLine(JsonSerializer.Serialize(result));
+        }
+
+        [TestMethod]
+        public void GetRandomCityStateZip_ReturnsRandomSet()
+        {
+            var randomCityState = Zip2City.GetRandomCityStateZip();
+
+            Assert.IsNotNull(randomCityState);
+            Assert.IsInstanceOfType(randomCityState, typeof(string[]));
+
+            Assert.IsNotNull(randomCityState[0], "It should have a city name.");
+            Assert.AreEqual(2, randomCityState[1].Length, "It should be a state code");
+            Assert.AreEqual(5, randomCityState[2].Length, "It should have a zip code.");
+
+            Console.WriteLine(JsonSerializer.Serialize(randomCityState));
         }
     }
 }
