@@ -2,7 +2,10 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace Zip2CityTests
 {
@@ -141,6 +144,57 @@ namespace Zip2CityTests
             Assert.AreEqual(5, randomCityState[2].Length, "It should have a zip code.");
 
             Console.WriteLine(JsonSerializer.Serialize(randomCityState));
+        }
+
+        [TestMethod]
+        public async Task GetDefaultCityState_Matches_CurrentData()
+        {
+            var zipcode = "90210";
+            var defaultCityState = Zip2City.GetDefaultCityState(zipcode);
+
+            try
+            {
+                var hc = new HttpClient();
+
+                var content = new StringContent("zip=" + zipcode);
+                content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/x-www-form-urlencoded");
+                var response = await hc.PostAsync("https://tools.usps.com/tools/app/ziplookup/cityByZip", content);
+                var json = await response.Content.ReadAsStringAsync();
+
+                var result = JsonSerializer.Deserialize<result>(json);
+
+                if (defaultCityState[0] != result.defaultCity)
+                {
+                    Assert.Inconclusive($"Actual default city is {result.defaultCity} instead of {defaultCityState[0]}.");
+                }
+
+                if (defaultCityState[1] != result.defaultState)
+                {
+                    Assert.Inconclusive($"Actual default state is {result.defaultState} instead of {defaultCityState[1]}.");
+                }
+            }
+            catch (WebException ex)
+            {
+                Assert.Inconclusive("Failed to retrieve data", ex);
+            }
+        }
+
+        class result
+        {
+            public string resultStatus { get; set; }
+            public string zip5 { get; set; }
+            public string defaultCity { get; set; }
+            public string defaultState { get; set; }
+            public string defaultRecordType { get; set; }
+            public listItem[] citiesList { get; set; }
+            public listItem[] nonAcceptList { get; set; }
+
+            public class listItem
+            {
+                public string city { get; set; }
+                public string state { get; set; }
+
+            }
         }
     }
 }
