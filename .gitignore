@@ -8,7 +8,4 @@
 /src/Zip2City/Zip2CityTests/obj
 /src/Zip2City/Zip2CityTests/bin
 /src/Zip2City/Zip2City/Utility.cs
-/.vs/Zip2City/v16/.suo
-/.vs/slnx.sqlite
-/.vs/ProjectSettings.json
-/.vs/VSWorkspaceState.json
+/.vs
