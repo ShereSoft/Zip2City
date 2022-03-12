@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net5.0;netcoreapp3.1;netstandard2.1;net40</TargetFrameworks>
+    <TargetFrameworks>net6.0;net5.0;netcoreapp3.1;netstandard2.1;net40</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>Zip2City</AssemblyName>
     <Authors>ZTC</Authors>
@@ -9,17 +9,17 @@
     <AssemblyVersion>3.0.0.0</AssemblyVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <Description>Provides fast, in-memory lookup of the postal service city and state names by zip code, covering All 50 states, DC, PR, VI, and AE. Data current as of September 28, 2021. No library dependencies. No external calls.</Description>
+    <Description>Provides fast, convenient, in-memory lookup of the postal service city and state names by zip code, covering All 50 states, DC, PR, VI, and AE. Data current as of September 28, 2021. No library dependencies. No external calls.</Description>
     <PackageReleaseNotes>
 3.0.0
- * Ended .NET 2.0 support
-
-
- * Complete data for all 50 states, DC, PR, VI, and AE
- * Current as of September 28, 2021
- * Multi-Framework Support (.NET 5, .NET Core 3.1, .NET Standard 2.1, .NET 4.0 and .NET 2.0)
- * Small assembly size (approx. 430KB)
- * Unit tested</PackageReleaseNotes>
+ * (BREAKING CHANGE) Ended .NET 2.0 support
+ * (BREAKING CHANGE) Introduced namespace
+ * Added .GetClosestCityState(zipcode) and .GetClosestCityStates(zipcode) for the exact or the closest match
+ * Optimized .GetRandomCityStateZip() implementation
+ * Added .GetRandomCityStateZip(random) for predictable values
+ * Added static property to get all data
+ * Added .NET 6 support
+</PackageReleaseNotes>
     <RepositoryUrl>https://github.com/ShereSoft/Zip2City</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>zipcode zip city state usps</PackageTags>
@@ -27,6 +27,7 @@
     <FileVersion>3.0.0.0</FileVersion>
     <Copyright>Copyright © 2020-2022 ShereSoft</Copyright>
     <Company>ShereSoft</Company>
+    <PackageIcon>ShereSoft.png</PackageIcon>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -38,5 +39,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\ShereSoft.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
 </Project>

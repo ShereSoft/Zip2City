@@ -6,6 +6,7 @@ using System.Net;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
+using ShereSoft;
 
 namespace Zip2CityTests
 {
@@ -83,6 +84,13 @@ namespace Zip2CityTests
         }
 
         [TestMethod]
+        public void GetClosestCityState_ForNonExistentZipCode_ReturnsClosestMatch()
+        {
+            var result = Zip2City.GetClosestCityState("99999");
+            Assert.IsNotNull(result, "Result should not be null.");
+        }
+
+        [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void GetDefaultCityState_ForInvalidZipCodeLength_ThrowsArgumentException()
         {
@@ -113,6 +121,15 @@ namespace Zip2CityTests
 
             Assert.IsNotNull(result);
             Console.WriteLine(JsonSerializer.Serialize(new string[0][]));
+        }
+
+        [TestMethod]
+        public void GetAllCityStates_ReturnsCityStateZip()
+        {
+            var result = Zip2City.GetClosestCityStates("99999");
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(3, result.Count());
         }
 
         [TestMethod]
@@ -147,6 +164,36 @@ namespace Zip2CityTests
         }
 
         [TestMethod]
+        public void GetRandomCityStateZip_ReturnsRandomSetWithRandomizer()
+        {
+            var randomCityState = Zip2City.GetRandomCityStateZip(new Random());
+
+            Assert.IsNotNull(randomCityState);
+            Assert.IsInstanceOfType(randomCityState, typeof(string[]));
+
+            Assert.IsNotNull(randomCityState[0], "It should have a city name.");
+            Assert.AreEqual(2, randomCityState[1].Length, "It should be a state code");
+            Assert.AreEqual(5, randomCityState[2].Length, "It should have a zip code.");
+
+            Console.WriteLine(JsonSerializer.Serialize(randomCityState));
+        }
+
+        [TestMethod]
+        public void GetRandomCityStateZip_ReturnsSameSetWithSameRandomizer()
+        {
+            var seed = 123;
+            var randomCityState1 = Zip2City.GetRandomCityStateZip(new Random(seed)).ToArray();
+
+            Assert.IsNotNull(randomCityState1);
+
+            var randomCityState2 = Zip2City.GetRandomCityStateZip(new Random(seed)).ToArray();
+
+            Assert.IsNotNull(randomCityState2);
+
+            Assert.IsTrue(randomCityState1.SequenceEqual(randomCityState2));
+        }
+
+        [TestMethod]
         public async Task GetDefaultCityState_Matches_CurrentData()
         {
             var zipcode = "90210";
@@ -155,7 +202,6 @@ namespace Zip2CityTests
             try
             {
                 var hc = new HttpClient();
-
                 var content = new StringContent("zip=" + zipcode);
                 content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/x-www-form-urlencoded");
                 var response = await hc.PostAsync("https://tools.usps.com/tools/app/ziplookup/cityByZip", content);
