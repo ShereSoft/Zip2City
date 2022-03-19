@@ -193,6 +193,7 @@ namespace Zip2CityTests
             Assert.IsTrue(randomCityState1.SequenceEqual(randomCityState2));
         }
 
+#if DEBUG
         [TestMethod]
         public async Task GetDefaultCityState_Matches_CurrentData()
         {
@@ -242,5 +243,6 @@ namespace Zip2CityTests
 
             }
         }
+#endif
     }
 }
