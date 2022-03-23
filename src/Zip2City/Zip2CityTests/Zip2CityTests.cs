@@ -222,17 +222,17 @@ namespace Zip2CityTests
 
                 if (defaultCityState[0] != result.defaultCity)
                 {
-                    Assert.Inconclusive($"Actual default city is {result.defaultCity} instead of {defaultCityState[0]}.");
+                    Assert.Fail($"Actual default city is {result.defaultCity} instead of {defaultCityState[0]}.");
                 }
 
                 if (defaultCityState[1] != result.defaultState)
                 {
-                    Assert.Inconclusive($"Actual default state is {result.defaultState} instead of {defaultCityState[1]}.");
+                    Assert.Fail($"Actual default state is {result.defaultState} instead of {defaultCityState[1]}.");
                 }
             }
             catch (WebException ex)
             {
-                Assert.Inconclusive("Failed to retrieve data", ex);
+                Assert.Fail("Failed to retrieve data", ex);
             }
         }
 
