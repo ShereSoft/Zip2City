@@ -29,4 +29,4 @@ jobs:
     - name: Build
       run: dotnet build --configuration Debug src/Zip2City/Zip2City/Zip2City.csproj
     - name: Test
-      run: dotnet test --verbosity detailed src/Zip2City/Zip2CityTests/Zip2CityTests.csproj 
+      run: dotnet test --verbosity normal src/Zip2City/Zip2CityTests/Zip2CityTests.csproj 
