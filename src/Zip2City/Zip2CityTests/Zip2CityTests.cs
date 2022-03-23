@@ -215,7 +215,7 @@ namespace Zip2CityTests
                 var hc = new HttpClient();
                 var content = new StringContent("zip=" + zipcode);
                 content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/x-www-form-urlencoded");
-                var response = await hc.PostAsync("https://tools.usps1.com/tools/app/ziplookup/cityByZip", content);
+                var response = await hc.PostAsync("https://tools.usps.com/tools/app/ziplookup/cityByZip", content);
                 var json = await response.Content.ReadAsStringAsync();
 
                 var result = JsonSerializer.Deserialize<result>(json);
