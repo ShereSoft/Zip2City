@@ -194,9 +194,20 @@ namespace Zip2CityTests
         }
 
         [TestMethod]
-        public async Task GetDefaultCityState_Matches_CurrentData()
+        [DataRow("77449")]
+        [DataRow("11368")]
+        [DataRow("60629")]
+        [DataRow("79936")]
+        [DataRow("90011")]
+        [DataRow("92335")]
+        [DataRow("08701")]
+        [DataRow("75034")]
+        [DataRow("37013")]
+        [DataRow("94565")]
+        [DataRow("78521")]
+        [DataRow("30044")]
+        public async Task GetDefaultCityState_Matches_CurrentDataAsync(string zipcode)
         {
-            var zipcode = "90210";
             var defaultCityState = Zip2City.GetDefaultCityState(zipcode);
 
             try
